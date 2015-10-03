@@ -11,8 +11,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
@@ -56,6 +58,10 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.qr_capture_tb_toolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         CameraManager.init(getApplication());
         mQRCaptureView = (QRCaptureView) findViewById(R.id.qr_capture_qcv_finder);
@@ -66,6 +72,16 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
         mVibrate = true;
         AudioManager audioService = (AudioManager) getSystemService(AUDIO_SERVICE);
         mPlayBeep = audioService.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
