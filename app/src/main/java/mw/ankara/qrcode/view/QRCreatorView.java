@@ -88,6 +88,7 @@ public class QRCreatorView extends ImageView {
 
     public interface OnQrCodeCreatedListener {
         void onSuccess(Bitmap bitmap);
+
         void onFailed(Exception e);
     }
 }

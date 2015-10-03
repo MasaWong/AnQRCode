@@ -23,7 +23,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -69,40 +68,34 @@ public final class CaptureActivityHandler extends Handler {
 
     @Override
     public void handleMessage(Message message) {
-        switch (message.what) {
-            case R.id.auto_focus:
-                //Log.d(TAG, "Got auto-focus message");
-                // When one auto focus pass finishes, start another. This is the closest thing to
-                // continuous AF. It does seem to hunt a bit, but I'm not sure what else to do.
-                if (state == State.PREVIEW) {
-                    CameraManager.get().requestAutoFocus(this, R.id.auto_focus);
-                }
-                break;
-            case R.id.restart_preview:
-                restartPreviewAndDecode();
-                break;
-            case R.id.decode_succeeded:
-                state = State.SUCCESS;
-                Bundle bundle = message.getData();
-                Bitmap barcode = bundle == null ? null :
-                    (Bitmap) bundle.getParcelable(DecodeThread.BARCODE_BITMAP);
-                activity.handleDecode((Result) message.obj, barcode);
-                break;
-            case R.id.decode_failed:
-                // We're decoding as fast as possible, so when one decode fails, start another.
-                state = State.PREVIEW;
-                CameraManager.get().requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
-                break;
-            case R.id.return_scan_result:
-                activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
-                activity.finish();
-                break;
-            case R.id.launch_product_query:
-                String url = (String) message.obj;
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                activity.startActivity(intent);
-                break;
+        int id = message.what;
+        if (id == R.id.auto_focus) {
+            //Log.d(TAG, "Got auto-focus message");
+            // When one auto focus pass finishes, start another. This is the closest thing to
+            // continuous AF. It does seem to hunt a bit, but I'm not sure what else to do.
+            if (state == State.PREVIEW) {
+                CameraManager.get().requestAutoFocus(this, R.id.auto_focus);
+            }
+        } else if (id == R.id.restart_preview) {
+            restartPreviewAndDecode();
+        } else if (id == R.id.decode_succeeded) {
+            state = State.SUCCESS;
+            Bundle bundle = message.getData();
+            Bitmap barcode = bundle == null ? null :
+                (Bitmap) bundle.getParcelable(DecodeThread.BARCODE_BITMAP);
+            activity.handleDecode((Result) message.obj, barcode);
+        } else if (id == R.id.decode_failed) {
+            // We're decoding as fast as possible, so when one decode fails, start another.
+            state = State.PREVIEW;
+            CameraManager.get().requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
+        } else if (id == R.id.return_scan_result) {
+            activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
+            activity.finish();
+        } else if (id == R.id.launch_product_query) {
+            String url = (String) message.obj;
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            activity.startActivity(intent);
         }
     }
 
