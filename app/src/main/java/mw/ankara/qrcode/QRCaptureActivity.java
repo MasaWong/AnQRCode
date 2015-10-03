@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -152,9 +153,10 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
             Uri uri = Uri.parse(obj.getText());
             intent.setData(uri);
             startActivity(intent);
-            finish();
         } catch (ActivityNotFoundException ignored) {
+            Toast.makeText(this, "抱歉，无法解析这个二维码", Toast.LENGTH_SHORT).show();
         }
+        finish();
     }
 
     private void initBeepSound() {
