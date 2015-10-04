@@ -1,6 +1,7 @@
 package mw.ankara.qrcode;
 
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -169,13 +170,18 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
             Uri uri = Uri.parse(obj.getText());
             intent.setData(uri);
             startActivity(intent);
+            finish();
         } catch (ActivityNotFoundException ignored) {
             new AlertDialog.Builder(this)
                 .setMessage(R.string.qr_capture_error)
-                .setPositiveButton(R.string.qr_capture_noted, null)
+                .setPositiveButton(R.string.qr_capture_noted, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
                 .show();
         }
-        finish();
     }
 
     private void initBeepSound() {
