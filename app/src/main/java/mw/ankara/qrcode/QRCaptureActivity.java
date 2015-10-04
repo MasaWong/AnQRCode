@@ -166,6 +166,7 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
 
         try {
             Intent intent = new Intent();
+            intent.setPackage(getPackageName());
             intent.setAction("android.intent.action.VIEW");
             Uri uri = Uri.parse(obj.getText());
             intent.setData(uri);
