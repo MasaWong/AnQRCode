@@ -12,13 +12,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -170,7 +170,10 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
             intent.setData(uri);
             startActivity(intent);
         } catch (ActivityNotFoundException ignored) {
-            Toast.makeText(this, "抱歉，无法解析这个二维码", Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(this)
+                .setMessage(R.string.qr_capture_error)
+                .setPositiveButton(R.string.qr_capture_noted, null)
+                .show();
         }
         finish();
     }
