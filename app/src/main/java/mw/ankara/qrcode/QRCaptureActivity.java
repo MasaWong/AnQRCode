@@ -178,6 +178,7 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        QRCaptureActivity.this.finish();
                     }
                 })
                 .show();
