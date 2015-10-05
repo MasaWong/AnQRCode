@@ -173,12 +173,12 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
             startActivity(intent);
             finish();
         } catch (ActivityNotFoundException ignored) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.Base_Theme_AppCompat_Light_Dialog_Alert)
                 .setMessage(R.string.qr_capture_error)
-                .setPositiveButton(R.string.qr_capture_noted, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.qr_capture_noted, null)
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                    public void onDismiss(DialogInterface dialog) {
                         QRCaptureActivity.this.finish();
                     }
                 })
