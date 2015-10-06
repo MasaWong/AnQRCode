@@ -21,7 +21,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data
-                    android:host="mw.anakra.qrcapture"
+                    android:host="qrcapture"
                     android:scheme="yoka" />
             </intent-filter>
         </activity>
