@@ -165,9 +165,8 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
         playBeepSoundAndVibrate();
 
         try {
-            Intent intent = new Intent();
+            Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setPackage(getPackageName());
-            intent.setAction("android.intent.action.VIEW");
             Uri uri = Uri.parse(obj.getText());
             intent.setData(uri);
             startActivity(intent);
