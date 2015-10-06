@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.google.zxing.BarcodeFormat;
@@ -50,9 +51,15 @@ public class QRCreatorView extends ImageView {
             HashMap<EncodeHintType, String> hints = new HashMap<>(1);
             hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
 
-            //图像数据转换，使用了矩阵转换
+            // 确保已经measure过了
+            ViewGroup.LayoutParams params = getLayoutParams();
+            int measureSpec = MeasureSpec.makeMeasureSpec(params.height,
+                params.height > 0 ? MeasureSpec.EXACTLY : MeasureSpec.UNSPECIFIED);
+            measure(measureSpec, measureSpec);
+
             final int width = getMeasuredWidth();
             final int height = getMeasuredHeight();
+            //图像数据转换，使用了矩阵转换
             BitMatrix rawBitMatrix = new QRCodeWriter().encode(
                 message, BarcodeFormat.QR_CODE, width, height, hints);
 
