@@ -91,9 +91,9 @@ public final class QRCaptureView extends View {
         // Draw the exterior (i.e. outside the framing rect) darkened
         mPaint.setColor(mResultBitmap != null ? RESULT_COLOR : MASK_COLOR);
         canvas.drawRect(0, 0, width, frame.top, mPaint);
-        canvas.drawRect(0, frame.top, frame.left, frame.bottom + 1, mPaint);
-        canvas.drawRect(frame.right + 1, frame.top, width, frame.bottom + 1, mPaint);
-        canvas.drawRect(0, frame.bottom + 1, width, height, mPaint);
+        canvas.drawRect(0, frame.top, frame.left, frame.bottom, mPaint);
+        canvas.drawRect(frame.right, frame.top, width, frame.bottom, mPaint);
+        canvas.drawRect(0, frame.bottom, width, height, mPaint);
 
         if (mResultBitmap != null) {
             // Draw the opaque result bitmap over the scanning rectangle
@@ -102,18 +102,31 @@ public final class QRCaptureView extends View {
         } else {
             // Draw a two pixel solid black border inside the framing rect
             mPaint.setColor(mFrameColor);
-            canvas.drawRect(frame.left, frame.top, frame.right + 1, frame.top + 2, mPaint);
-            canvas.drawRect(frame.left, frame.top + 2, frame.left + 2, frame.bottom - 1, mPaint);
-            canvas.drawRect(frame.right - 1, frame.top, frame.right + 1, frame.bottom - 1, mPaint);
-            canvas.drawRect(frame.left, frame.bottom - 1, frame.right + 1, frame.bottom + 1, mPaint);
+
+            int size = width / 16;
+            // 左上
+            canvas.drawRect(frame.left - 4, frame.top - 4, frame.left, frame.top + size, mPaint);
+            canvas.drawRect(frame.left, frame.top - 4, frame.left + size, frame.top, mPaint);
+
+            // 左下
+            canvas.drawRect(frame.left - 4, frame.bottom - size, frame.left, frame.bottom + 4, mPaint);
+            canvas.drawRect(frame.left, frame.bottom, frame.left + size, frame.bottom + 4, mPaint);
+
+            // 右上
+            canvas.drawRect(frame.right, frame.top - 4, frame.right + 4, frame.top + size, mPaint);
+            canvas.drawRect(frame.right - size, frame.top - 4, frame.right, frame.top, mPaint);
+
+            // 右下
+            canvas.drawRect(frame.right, frame.bottom - size, frame.right + 4, frame.bottom + 4, mPaint);
+            canvas.drawRect(frame.right - size, frame.bottom, frame.right, frame.bottom + 4, mPaint);
 
             // Draw a red "laser scanner" line through the middle to show decoding is active
             mPaint.setColor(mLaserColor);
             mPaint.setAlpha(SCANNER_ALPHA[mScannerAlpha]);
             mScannerAlpha = (mScannerAlpha + 1) % SCANNER_ALPHA.length;
-            mCurrentPosition = (mCurrentPosition + frame.height() / 100) % frame.height();
-            canvas.drawRect(frame.left + 2, frame.top + mCurrentPosition - 1,
-                frame.right - 1, frame.top + mCurrentPosition + 2, mPaint);
+            mCurrentPosition = (mCurrentPosition + frame.height() / 50) % frame.height();
+            canvas.drawRect(frame.left + 8, frame.top + mCurrentPosition - 1,
+                frame.right - 8, frame.top + mCurrentPosition + 1, mPaint);
 
             Collection<ResultPoint> currentPossible = mPossibleResultPoints;
             Collection<ResultPoint> currentLast = mLastPossibleResultPoints;
