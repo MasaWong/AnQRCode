@@ -107,8 +107,8 @@ final class CameraConfigurationManager {
         if (cameraResolution == null) {
             // Ensure that the camera resolution is a multiple of 8, as the screen may not be.
             cameraResolution = new Point(
-                (screenResolution.x >> 3) << 3,
-                (screenResolution.y >> 3) << 3);
+                    (screenResolution.x >> 3) << 3,
+                    (screenResolution.y >> 3) << 3);
         }
 
         return cameraResolution;

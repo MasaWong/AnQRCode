@@ -126,7 +126,7 @@ public final class QRCaptureView extends View {
             mScannerAlpha = (mScannerAlpha + 1) % SCANNER_ALPHA.length;
             mCurrentPosition = (mCurrentPosition + frame.height() / 50) % frame.height();
             canvas.drawRect(frame.left + 8, frame.top + mCurrentPosition - 1,
-                frame.right - 8, frame.top + mCurrentPosition + 1, mPaint);
+                    frame.right - 8, frame.top + mCurrentPosition + 1, mPaint);
 
             Collection<ResultPoint> currentPossible = mPossibleResultPoints;
             Collection<ResultPoint> currentLast = mLastPossibleResultPoints;

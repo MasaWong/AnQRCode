@@ -57,7 +57,7 @@ public final class CaptureActivityHandler extends Handler {
                                   String characterSet) {
         this.activity = activity;
         decodeThread = new DecodeThread(activity, decodeFormats, characterSet,
-            new ViewfinderResultPointCallback(activity.getQRCaptureView()));
+                new ViewfinderResultPointCallback(activity.getQRCaptureView()));
         decodeThread.start();
         state = State.SUCCESS;
 
@@ -82,7 +82,7 @@ public final class CaptureActivityHandler extends Handler {
             state = State.SUCCESS;
             Bundle bundle = message.getData();
             Bitmap barcode = bundle == null ? null :
-                (Bitmap) bundle.getParcelable(DecodeThread.BARCODE_BITMAP);
+                    (Bitmap) bundle.getParcelable(DecodeThread.BARCODE_BITMAP);
             activity.handleDecode((Result) message.obj, barcode);
         } else if (id == R.id.decode_failed) {
             // We're decoding as fast as possible, so when one decode fails, start another.
