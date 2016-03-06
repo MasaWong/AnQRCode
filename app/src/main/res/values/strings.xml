@@ -2,6 +2,7 @@
 <resources>
     <string name="scheme">qrcode</string>
     <string name="qr_capture_title">二维码</string>
+    <string name="qr_capture_permission_denied">无法获取摄像头权限，请手动设置权限</string>
     <string name="qr_capture_error">无法解析这个二维码</string>
     <string name="qr_capture_noted">知道了</string>
 </resources>

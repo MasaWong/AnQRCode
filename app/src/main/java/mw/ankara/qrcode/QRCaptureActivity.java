@@ -1,8 +1,9 @@
 package mw.ankara.qrcode;
 
-import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
@@ -43,11 +44,12 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
     private InactivityTimer mInactivityTimer;
     private MediaPlayer mMediaPlayer;
 
-    private String mCharacterset;
+    private String mCharacterSet;
 
-    private boolean mHasSurface;
+    private boolean mPermissionDenied;
+    private boolean mHasSurface = false;
     private boolean mPlayBeep;
-    private boolean mVibrate;
+    private boolean mVibrate = true;
 
     /**
      * Called when the activity is first created.
@@ -68,11 +70,19 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
         mQRCaptureView = (QRCaptureView) findViewById(R.id.qr_capture_qcv_finder);
         mInactivityTimer = new InactivityTimer(this);
 
-        mHasSurface = false;
-
-        mVibrate = true;
         AudioManager audioService = (AudioManager) getSystemService(AUDIO_SERVICE);
         mPlayBeep = audioService.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
+
+        checkPermission();
+    }
+
+    private void checkPermission() {
+        int permissionState = getPackageManager().checkPermission(
+            "android.permission.CAMER", getPackageName());
+        mPermissionDenied = permissionState == PackageManager.PERMISSION_DENIED;
+        if (mPermissionDenied) {
+            createErrorDialogAndShow(R.string.qr_capture_permission_denied, R.string.qr_capture_noted);
+        }
     }
 
     @Override
@@ -89,6 +99,10 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
     protected void onResume() {
         super.onResume();
 
+        if (mPermissionDenied) {
+            return;
+        }
+
         SurfaceView surfaceView = (SurfaceView) findViewById(R.id.qr_capture_sv_preview);
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         if (mHasSurface) {
@@ -97,7 +111,7 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
             surfaceHolder.addCallback(this);
         }
         mBarcodeFormats = null;
-        mCharacterset = null;
+        mCharacterSet = null;
 
         initBeepSound();
     }
@@ -126,7 +140,7 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
         }
 
         if (mCaptureActivityHandler == null) {
-            mCaptureActivityHandler = new CaptureActivityHandler(this, mBarcodeFormats, mCharacterset);
+            mCaptureActivityHandler = new CaptureActivityHandler(this, mBarcodeFormats, mCharacterSet);
         }
     }
 
@@ -164,24 +178,17 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
         mInactivityTimer.onActivity();
         playBeepSoundAndVibrate();
 
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setPackage(getPackageName());
-            Uri uri = Uri.parse(obj.getText());
-            intent.setData(uri);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setPackage(getPackageName());
+        Uri uri = Uri.parse(obj.getText());
+        intent.setData(uri);
+
+        ComponentName componentName = intent.resolveActivity(getPackageManager());
+        if (componentName != null) {
             startActivity(intent);
             finish();
-        } catch (ActivityNotFoundException ignored) {
-            new AlertDialog.Builder(this, R.style.Base_Theme_AppCompat_Light_Dialog_Alert)
-                    .setMessage(R.string.qr_capture_error)
-                    .setPositiveButton(R.string.qr_capture_noted, null)
-                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            QRCaptureActivity.this.finish();
-                        }
-                    })
-                    .show();
+        } else {
+            createErrorDialogAndShow(R.string.qr_capture_error, R.string.qr_capture_noted);
         }
     }
 
@@ -227,4 +234,16 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
             mediaPlayer.seekTo(0);
         }
     };
+
+    private void createErrorDialogAndShow(int message, int positive) {
+        new AlertDialog.Builder(this, R.style.Base_Theme_AppCompat_Light_Dialog_Alert)
+            .setMessage(message).setPositiveButton(positive, null)
+            .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    QRCaptureActivity.this.finish();
+                }
+            })
+            .show();
+    }
 }
