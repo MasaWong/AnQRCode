@@ -59,7 +59,7 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_capture);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.qr_capture_tb_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
