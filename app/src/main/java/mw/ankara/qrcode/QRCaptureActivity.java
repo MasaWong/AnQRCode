@@ -72,8 +72,6 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
 
         AudioManager audioService = (AudioManager) getSystemService(AUDIO_SERVICE);
         mPlayBeep = audioService.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
-
-        checkPermission();
     }
 
     private void checkPermission() {
