@@ -10,6 +10,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -103,6 +104,11 @@ public class QRCaptureActivity extends AppCompatActivity implements Callback {
 
         SurfaceView surfaceView = (SurfaceView) findViewById(R.id.qr_capture_sv_preview);
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
+
+        if(Build.VERSION.SDK_INT < 11) {
+            surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        }
+
         if (mHasSurface) {
             initCamera(surfaceHolder);
         } else {
